@@ -1,0 +1,2 @@
+If the expression is true, the code within the block is executed. When the block of code reaches the closed brace, control returns to the top, and the whole process starts over again.
+D thewhole
