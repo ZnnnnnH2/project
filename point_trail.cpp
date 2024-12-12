@@ -28,6 +28,11 @@ void t1(int (*p)[10][4])
 {
     cout << p << endl;
 }
+struct node{
+    int a;
+    string name;
+};
+node *p;
 int main()
 {
     // int a[] = {0, 1, 2, 3, 4};
@@ -40,16 +45,26 @@ int main()
     // char b[] = "hello";
     // char c[] = "world";
     // strc(b, c);
-    int a[10][4];
-    t(a);
-    t1(&a);
-    int b[10];
-    int c[2];
-    int *arry[10];
+    // int a[10][4];
+    // t(a);
+    // t1(&a);
+    // int b[10];
+    // int c[2];
+    // int *arry[10];
 
-    intt arr[3];
-    arr[0] = b;
-    arry[1] = b;
-    arry[2] = c;
-    return 0;
+    // intt arr[3];
+    // arr[0] = b;
+    // arry[1] = b;
+    // arry[2] = c;
+    p = new node[100];
+    p[0].a = 1;
+    p[0].name = "hello";
+    cout << p[0].a << " " << p[0].name << endl;
+    (p+1)->a = 2;
+    intt *arr;
+    arr=(intt *) malloc(10*sizeof(intt));
+    for (int i = 0; i < 10;i++){
+        arr[i] = (intt)malloc(10 * sizeof(int));
+    }
+        return 0;
 }
