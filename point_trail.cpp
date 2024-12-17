@@ -33,7 +33,7 @@ struct node{
     string name;
 };
 node *p;
-int main()
+int main(int argc, char const *argv[]) //mian function can have two parameters
 {
     // int a[] = {0, 1, 2, 3, 4};
     // int *p1 = &a[1];
@@ -56,19 +56,29 @@ int main()
     // arr[0] = b;
     // arry[1] = b;
     // arry[2] = c;
-    p = new node[100];
-    p[0].a = 1;
-    p[0].name = "hello";
-    cout << p[0].a << " " << p[0].name << endl;
-    (p+1)->a = 2;
-    intt *arr;
-    arr=(intt *) malloc(10*sizeof(intt));
-    for (int i = 0; i < 10;i++){
-        arr[i] = (intt)malloc(10 * sizeof(int));
-    }
-    for (int i = 0; i < 10;i++){
-        free(arr[i]);
-    }
-    free(arr);
-        return 0;
+    // p = new node[100];
+    // p[0].a = 1;
+    // p[0].name = "hello";
+    // cout << p[0].a << " " << p[0].name << endl;
+    // (p+1)->a = 2;
+    // intt *arr;
+    // arr=(intt *) malloc(10*sizeof(intt));
+    // for (int i = 0; i < 10;i++){
+    //     arr[i] = (intt)malloc(10 * sizeof(int));
+    // }
+    // for (int i = 0; i < 10;i++){
+    //     free(arr[i]);
+    // }
+    // free(arr);
+    char c[] = "hello";
+    const charr a = c; // a is a const char* type
+    // a = "qwasdf"; // error: assignment of read-only variable ‘a’
+    a[2] = '3';
+    cout << a << endl;
+    char const *b = c; 
+    // b[2] = '3'; // error: assignment of read-only location ‘*(b + 2)’
+    char d[] = "adsfasdf";
+    b = d;
+    cout << b << endl;
+    return 0;
 }
