@@ -48,29 +48,60 @@ int main()
 
 int book_manager_load(book_manager_t *mgr, char *file_name)
 {
-    FILE *fr = fopen(file_name, "r");
-    if (fr == NULL)
-    {
+    // FILE *fr = fopen(file_name, "r");
+    // if (fr == NULL)
+    // {
+    //     return -1;
+    // }
+    // fscanf(fr, "%d", &mgr->size);
+    // mgr->data = new book_record_t[mgr->size];
+    // char c;
+    // for (int i = 0; i < mgr->size; i++)
+    // {
+    //     c = fgetc(fr);
+    //     c = fgetc(fr);
+    //     fscanf(fr, "%[^\n]", (mgr->data)[i].isbn);
+    //     c = fgetc(fr);
+    //     fscanf(fr, "%[^\n]", (mgr->data)[i].name);
+    //     c = fgetc(fr);
+    //     fscanf(fr, "%[^\n]", (mgr->data)[i].author);
+    //     c = fgetc(fr);
+    //     fscanf(fr, "%[^\n]", (mgr->data)[i].publisher);
+    //     c = fgetc(fr);
+    //     fscanf(fr, "%d", &(mgr->data)[i].year);
+    //     // c = fgetc(fr);
+    // }
+    // fclose(fr);
+    FILE *fp = fopen(file_name, "r");
+    if (fp == NULL)
         return -1;
-    }
-    fscanf(fr, "%d", &mgr->size);
-    mgr->data = new book_record_t[mgr->size];
-    char c;
+    fseek(fp, 0, SEEK_SET);
+    fscanf(fp, "%d", &mgr->size);
+    mgr->data = (book_record_t *)calloc(mgr->size, sizeof(book_record_t));
+    // if (fgetc(fp) == NULL)
+    //     return -1;
+    
     for (int i = 0; i < mgr->size; i++)
     {
-        c = fgetc(fr);
-        c = fgetc(fr);
-        fscanf(fr, "%[^\n]", (mgr->data)[i].isbn);
-        c = fgetc(fr);
-        fscanf(fr, "%[^\n]", (mgr->data)[i].name);
-        c = fgetc(fr);
-        fscanf(fr, "%[^\n]", (mgr->data)[i].author);
-        c = fgetc(fr);
-        fscanf(fr, "%[^\n]", (mgr->data)[i].publisher);
-        c = fgetc(fr);
-        fscanf(fr, "%d", &(mgr->data)[i].year);
-        // c = fgetc(fr);
+        fgetc(fp);
+        fgetc(fp);
+        if (fgets((mgr->data)[i].isbn, 2048, fp) == NULL)
+            return -1;
+        mgr->data[i].isbn[strlen(mgr->data[i].isbn) - 1] = '\0';
+        if (fgets((mgr->data)[i].name, 2048, fp) == NULL)
+            return -1;
+        mgr->data[i].name[strlen(mgr->data[i].name) - 1] = '\0';
+        if (fgets((mgr->data)[i].author, 2048, fp) == NULL)
+            return -1;
+        mgr->data[i].author[strlen(mgr->data[i].author) - 1] = '\0';
+        if (fgets((mgr->data)[i].publisher, 2048, fp) == NULL)
+            return -1;
+        mgr->data[i].publisher[strlen(mgr->data[i].publisher) - 1] = '\0';
+        fscanf(fp, "%d", &(mgr->data)[i].year);
+        if (fgetc(fp) == NULL)
+            return -1;
     }
-    fclose(fr);
+    fclose(fp);
+    return 0;
     return 0;
 }
