@@ -1,95 +1,81 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include <algorithm>
 #include <vector>
-
 using namespace std;
 
-// 使用 unordered_map 来缓存已计算的子字符串是否融洽
-unordered_map<string, bool> memo;
+unordered_map<unsigned long long, bool> memo;
 
-// 辅助函数：计算字符串的字符频率
-bool is_same_frequency(const string &S, const string &T)
+// 计算子串的哈希值
+unsigned long long get_hash(const string &s, int l, int r)
 {
-    vector<int> freq(26, 0);
-    for (char c : S)
+    unsigned long long hash = 0;
+    for (int i = l; i < r; i++)
     {
-        freq[c - 'a']++;
+        hash = hash * 131 + s[i];
     }
-    for (char c : T)
-    {
-        freq[c - 'a']--;
-    }
-    for (int count : freq)
-    {
-        if (count != 0)
-            return false;
-    }
-    return true;
+    return hash;
 }
 
-// 递归判断字符串S和T是否融洽
-bool is_cordial(const string &S, const string &T)
+bool is_cordial(const string &S, const string &T, int sl, int sr, int tl, int tr)
 {
-    // 如果已经计算过，直接返回缓存的结果
-    if (memo.find(S + "|" + T) != memo.end())
-    {
-        return memo[S + "|" + T];
-    }
-
-    int n = S.size();
-
-    // 1. 如果S和T相等，则它们融洽
-    if (S == T)
-    {
-        memo[S + "|" + T] = true;
-        return true;
-    }
-
-    // 2. 如果字符频率不同，它们不可能融洽
-    if (!is_same_frequency(S, T))
-    {
-        memo[S + "|" + T] = false;
+    if (sr - sl != tr - tl)
         return false;
-    }
+    int len = sr - sl;
 
-    // 3. 字符串长度必须能够被3整除
-    if (n % 3 != 0)
+    // 计算当前子问题的哈希值
+    unsigned long long key = get_hash(S, sl, sr) * 131 + get_hash(T, tl, tr);
+    if (memo.count(key))
+        return memo[key];
+
+    // 检查是否相等
+    if (S.substr(sl, len) == T.substr(tl, len))
     {
-        memo[S + "|" + T] = false;
-        return false;
+        return memo[key] = true;
     }
 
-    // 4. 分割字符串并递归检查
-    int third = n / 3;
-    string S1 = S.substr(0, third), S2 = S.substr(third, third), S3 = S.substr(2 * third, third);
-    string T1 = T.substr(0, third), T2 = T.substr(third, third), T3 = T.substr(2 * third, third);
+    // 长度不能被3整除
+    if (len % 3 != 0)
+    {
+        return memo[key] = false;
+    }
 
-    // 尝试所有排列
-    bool result = (is_cordial(S1, T1) && is_cordial(S2, T2) && is_cordial(S3, T3)) ||
-                  (is_cordial(S1, T2) && is_cordial(S2, T3) && is_cordial(S3, T1)) ||
-                  (is_cordial(S1, T3) && is_cordial(S2, T1) && is_cordial(S3, T2));
+    // 检查字符频率
+    vector<int> freq(26, 0);
+    for (int i = sl; i < sr; i++)
+        freq[S[i] - 'a']++;
+    for (int i = tl; i < tr; i++)
+        freq[T[i] - 'a']--;
+    for (int i : freq)
+        if (i != 0)
+            return memo[key] = false;
 
-    // 缓存结果
-    memo[S + "|" + T] = result;
-    return result;
+    int third = len / 3;
+    // 只需要检查不同的排列组合
+    bool result = false;
+    for (int i = 0; i < 3 && !result; i++)
+    {
+        for (int j = 0; j < 3 && !result; j++)
+        {
+            if (j == i)
+                continue;
+            int k = 3 - i - j;
+            result |= (is_cordial(S, T, sl, sl + third, tl + i * third, tl + (i + 1) * third) &&
+                       is_cordial(S, T, sl + third, sl + 2 * third, tl + j * third, tl + (j + 1) * third) &&
+                       is_cordial(S, T, sl + 2 * third, sr, tl + k * third, tl + (k + 1) * third));
+        }
+    }
+    return memo[key] = result;
 }
 
 int main()
 {
-    // freopen("in.txt", "r", stdin);
+    freopen("in.txt", "r", stdin);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
     string S, T;
     cin >> S >> T;
-
-    if (is_cordial(S, T))
-    {
-        cout << "YES" << endl;
-    }
-    else
-    {
-        cout << "NO" << endl;
-    }
-
+    cout << (is_cordial(S, T, 0, S.length(), 0, T.length()) ? "YES" : "NO");
     return 0;
 }
