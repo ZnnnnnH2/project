@@ -31,7 +31,7 @@ int getmun(int a, int b, char sign)
 }
 bool checker(int a)
 {
-    if (a < 0 or a > 100)
+    if (a < 0 or a > 1000)
     {
         return false;
     }
@@ -39,14 +39,16 @@ bool checker(int a)
 }
 int main()
 {
+    const int NUMOFMATH = 25;
+    const int mod = 100;
     srand(time(0));
-    FILE *fp = fopen("math.doc", "w");
+    FILE *fp = fopen("math.txt", "w");
     FILE *fp2 = fopen("ans.txt", "w");
-    for (int i = 1; i <= 50; i++)
+    for (int i = 1; i <= NUMOFMATH; i++)
     {
-        int a = rand() % 50;
-        int b = rand() % 50;
-        int c = rand() % 50;
+        int a = rand() % mod;
+        int b = rand() % mod;
+        int c = rand() % mod;
         char sign1 = getSign();
         char sign2 = getSign();
         if (rand() % 2 == 0)
